@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	<select id="getPageSize" parameterType="map" resultType="int">
+		SELECT  COUNT(*) 
+		FROM	board 
+		<if test="word != null">
+		WHERE   title
+		LIKE    #{word}
+		</if>
+		LIMIT   #{currentGroupPage}, 26
+	</select>
+	
+	<select id="getMaxOtherNo" parameterType="long" resultType="long">
+		SELECT	MAX(order_no) 
+		FROM 	board 
+		WHERE 	group_no = #{groupNo}
+	</select>
+	
+	<select id="getCommentList" parameterType="long" resultType="boardvo">
+		SELECT	no,
+				content,
+				reg_date AS regDate,
+				board_no AS boardNo
+		FROM 	comment 
+		WHERE 	board_no = #{boardNo}
+	</select>
+	
+	
+	<select id= "getAllList"  parameterType="map"  resultType="boardvo">
+		SELECT    board.no AS no, 
+			      title,  
+			      name,
+			      read_count AS readCount, 
+			      reg_date AS regDate,  
+			      group_no AS groupNo,
+			      order_no AS orderNo,  
+			      depth, 
+			      user_no AS userNo, 
+			      board_delete AS boardDelete,
+			      @rownum := @rownum + 1 AS RNUM, 
+			      parent_no AS parentNo
+		FROM      board,
+			      (select @rownum :=0) AS R,
+			      users
+	    WHERE	  users.no = board.user_no
+	    <if test="word != null">
+		AND     title LIKE #{word}  
+		</if>
+		ORDER  BY group_no DESC, 
+				  order_no DESC 
+		LIMIT     #{currentDataSizePerPage}, 5
+	</select>
+	
+	<update id="update" parameterType= "boardvo">
+		UPDATE  board 
+		SET 	title = #{title}, 
+				content = #{content} 
+		WHERE 	no = #{no}
+	</update>
+	
+	<update id="updateReadCount" parameterType="long">
+		UPDATE  board 
+		SET 	read_count = read_count + 1 
+		WHERE 	no = #{no}
+	</update>
+
+	<select id= "getOneList"  parameterType= "long"  resultType= "boardvo">
+		SELECT    no, 
+			      title,
+			      content,
+			      read_count AS readCount, 
+			      reg_date AS regDate,  
+			      group_no AS groupNo,
+			      order_no AS orderNo,  
+			      depth, 
+			      user_no AS userNo, 
+			      board_delete AS boardDelete,
+			      parent_no AS parentNo
+		FROM   	  board
+		WHERE     no = #{no}
+	</select>
+	
+	<select id="getComment" parameterType= "long" resultType="commentvo">
+		SELECT	no,
+				content,
+				reg_date AS regDate,
+				board_no AS boardNo
+		FROM    comment
+		WHERE   no = ${no}
+	</select>
+	
+	<insert id="insertComment" parameterType="commentvo">
+		INSERT 
+		INTO comment 
+		VALUES(
+				null, 
+				#{content}, 
+				now(), 
+				#{boardNo}, 
+				#{userNo}
+			  )
+	
+	</insert>
+	
+	<update id="delete" parameterType= "long">
+		UPDATE board 
+		SET    board_delete = 1 
+		where  no = #{no}
+	</update>
+	
+	<insert id="insert" parameterType="boardvo">
+		INSERT 
+		INTO board(
+					no, 
+					title,
+					content, 
+					read_count, 
+					reg_date, 
+					group_no, 
+					order_no, 
+					parent_no, 
+					depth, 
+					user_no, 
+					board_delete 
+				  ) 
+			<if test="parentNo == 0"> 
+				  	SELECT   
+						  null,
+						  #{title},  
+						  #{content},  
+						  0,  
+						  now(),  
+						  ifnull(max(no), 0) + 1,  
+						  0, 
+						  0, 
+						  0,  
+						  #{userNo},  
+						  0 
+				    FROM board
+		    </if>
+		    
+		    <if test="parentNo != 0">
+		    		VALUES(
+		    				null, 
+		    				#{title}, 
+		    				#{content}, 
+		    				0, 
+		    				now(), 
+		    				#{groupNo}, 
+		    				#{orderNo}, 
+		    				#{parentNo}, 
+		    				#{depth} + 1, 
+		    				#{userNo}, 
+		    				0
+		    			 )
+		    </if>
+	</insert>
+	
+	<update id="updateArrangeList" parameterType="boardvo">
+		<![CDATA[
+			UPDATE board 
+			SET    order_no = order_no + 1 
+			WHERE  group_no = #{groupNo} 
+			AND    order_no >= #{orderNo}
+		]]> 
+	</update>
+	
+</mapper>
