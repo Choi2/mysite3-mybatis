@@ -26,7 +26,6 @@ public class Pager {
 		this.word = word;
 		
 		this.currentDataSizePerPage = page * ConstantVariables.PAGE_SIZE;
-		this.currentGroupPage = page / ConstantVariables.PAGE_SIZE;
 		
 		if (this.word != null && !this.word.equals("")) {
 			this.word = "%" + this.word + "%";
@@ -36,7 +35,7 @@ public class Pager {
 			
 		this.boardSize = boardService.getCurrentGroupPage(currentGroupPage * ConstantVariables.GROUP_SIZE,  word);
 		
-		this.startGroupPage = currentGroupPage;
+		this.startGroupPage = page / ConstantVariables.PAGE_SIZE;;
 		this.startPage = (currentGroupPage * ConstantVariables.PAGE_SIZE) + 1;
 		this.endPage = this.startPage + (boardSize / ConstantVariables.PAGE_SIZE);
 		this.endPage = (boardSize % ConstantVariables.PAGE_SIZE == 0) ? this.endPage - 1:  this.endPage; 
