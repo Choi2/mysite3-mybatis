@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cafe24.mysite.common.Pager;
 import com.cafe24.mysite.service.BoardService;
 import com.cafe24.mysite.vo.BoardVo;
 import com.cafe24.mysite.vo.CommentVo;
+import com.cafe24.mysite.vo.Pager;
 import com.cafe24.mysite.vo.UserVo;
 
 @Controller
@@ -28,7 +28,8 @@ public class BoardController {
 	@RequestMapping("")
 	public String list(Model model,  Pager pager) {
 		
-		List<BoardVo> list = boardService.getBoardList(pager);
+		List<BoardVo> list = boardService.getAllBoardList(pager);
+		pager = boardService.getPager();
 		model.addAttribute("list", list);
 		model.addAttribute("pager", pager);
 

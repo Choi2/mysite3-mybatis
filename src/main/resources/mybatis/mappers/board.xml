@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="board">
 	
-	<select id="getPageSize" parameterType="map" resultType="int">
+	<select id="getPageSize" parameterType="pager" resultType="int">
 		SELECT  COUNT(*) 
 		FROM	board 
 		<if test="word != null">
 		WHERE   title
 		LIKE    #{word}
 		</if>
-		LIMIT   #{currentGroupPage}, 26
+		LIMIT   #{startGroupPage}, 26
 	</select>
 	
 	<select id="getMaxOtherNo" parameterType="long" resultType="long">

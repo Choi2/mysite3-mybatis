@@ -5,25 +5,30 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cafe24.mysite.common.Pager;
 import com.cafe24.mysite.repository.BoardDao;
 import com.cafe24.mysite.vo.BoardVo;
 import com.cafe24.mysite.vo.CommentVo;
+import com.cafe24.mysite.vo.Pager;
 
 @Service
 public class BoardService {
 
 	@Autowired
 	private BoardDao boardDao;
-
-	public List<BoardVo> getBoardList(Pager pager) {
+	private Pager pager;
+	
+	
+	public List<BoardVo> getAllBoardList(Pager pager) {
+		pager.setBoardSize(boardDao.getPageSize(pager));
 		pager.calculatePage(pager.getPage(), pager.getWord());
-		return boardDao.getAllList(pager.getCurrentDataSizePerPage(), pager.getWord());
+		this.pager = pager;
+		return boardDao.getAllList(pager);
 	}
 
-	public int getCurrentGroupPage(int currentGroupPage, String word) {
-		return boardDao.getPageSize(currentGroupPage, word);
+	public Pager getPager() {
+		return this.pager;
 	}
+	
 
 	public void updateReadCount(long no) {
 		boardDao.updateReadCount(no);

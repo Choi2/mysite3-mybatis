@@ -1,8 +1,6 @@
 package com.cafe24.mysite.repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.cafe24.mysite.vo.BoardVo;
 import com.cafe24.mysite.vo.CommentVo;
-
+import com.cafe24.mysite.vo.Pager;
+	
 @Repository
 public class BoardDao {
 	
@@ -41,11 +40,8 @@ public class BoardDao {
 		return sqlSession.insert("board.comment", vo);
 	}
 
-	public List<BoardVo> getAllList(int currentDataSizePerPage, String word) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("word", word);
-		map.put("currentDataSizePerPage", currentDataSizePerPage);
-		return sqlSession.selectList("board.getAllList", map);
+	public List<BoardVo> getAllList(Pager pager) {
+		return sqlSession.selectList("board.getAllList", pager);
 	}
 
 	public int update(BoardVo vo) {
@@ -56,13 +52,8 @@ public class BoardDao {
 		return sqlSession.update("board.updateReadCount", no);
 	}
 
-	public int getPageSize(int currentGroupPage, String word) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("word", word);
-		map.put("currentGroupPage", currentGroupPage);
-/*		System.out.println("currentGroupPage = " + currentGroupPage);
-		System.out.println("word = " + word);*/
-		return sqlSession.selectOne("board.getPageSize", map);
+	public int getPageSize(Pager pager) {
+		return sqlSession.selectOne("board.getPageSize", pager);
 	}
 
 	public long getMaxOtherNo(long groupNo) {

@@ -1,4 +1,4 @@
-package com.cafe24.mysite.common;
+package com.cafe24.mysite.vo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,8 +13,6 @@ public class Pager {
 	private String word;
 	
 	private int currentDataSizePerPage;
-	private int currentGroupPage;
-	
 	private int boardSize;
 	
 	@Autowired 
@@ -32,11 +30,9 @@ public class Pager {
 		} else {
 			this.word = null;
 		}
-			
-		this.boardSize = boardService.getCurrentGroupPage(currentGroupPage * ConstantVariables.GROUP_SIZE,  word);
+		this.startGroupPage = page / ConstantVariables.PAGE_SIZE;
 		
-		this.startGroupPage = page / ConstantVariables.PAGE_SIZE;;
-		this.startPage = (currentGroupPage * ConstantVariables.PAGE_SIZE) + 1;
+		this.startPage = (startGroupPage * ConstantVariables.PAGE_SIZE) + 1;
 		this.endPage = this.startPage + (boardSize / ConstantVariables.PAGE_SIZE);
 		this.endPage = (boardSize % ConstantVariables.PAGE_SIZE == 0) ? this.endPage - 1:  this.endPage; 
 		if(boardSize > ConstantVariables.GROUP_SIZE) {
@@ -112,19 +108,6 @@ public class Pager {
 	public void setEndPage(int endPage) {
 		this.endPage = endPage;
 	}
-
-
-
-	public int getCurrentGroupPage() {
-		return currentGroupPage;
-	}
-
-
-
-	public void setCurrentGroupPage(int currentGroupPage) {
-		this.currentGroupPage = currentGroupPage;
-	}
-
 
 
 	public int getBoardSize() {

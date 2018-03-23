@@ -27,4 +27,8 @@ public class UserDao {
 	public boolean insert(UserVo vo) {
 		return (sqlSession.insert("user.insert", vo) == 1);
 	}
+	
+	public UserVo get(String email) {
+		return sqlSession.selectOne("user.getByEmail", email);
+	}
 }
