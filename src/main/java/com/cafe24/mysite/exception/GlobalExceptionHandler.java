@@ -6,14 +6,19 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.cafe24.mysite.controller.BoardController;
 import com.cafe24.mysite.dto.JSONResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	
+	private static final Log LOG = LogFactory.getLog(BoardController.class );
 	
 	@ExceptionHandler(Exception.class)
 	public void handlerException(
@@ -24,13 +29,11 @@ public class GlobalExceptionHandler {
 		
 		StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors));
-		
-		
-		request.setAttribute("errors", errors.toString());
+		LOG.warn(new PrintWriter(errors));
+	//	request.setAttribute("errors", errors.toString());
 		
 		
 		String accept = request.getHeader("accept");
-		System.out.println("accept = " + accept);
 		if(accept.matches(".*application/json.*")) {
 			//2. 실패 JSON 응답
 			JSONResult jsonResult = JSONResult.fail(errors.toString());

@@ -19,8 +19,16 @@ public class BoardService {
 	
 	
 	public List<BoardVo> getAllBoardList(Pager pager) {
-		pager.setBoardSize(boardDao.getPageSize(pager));
-		pager.calculatePage(pager.getPage(), pager.getWord());
+		
+		System.out.println("word = " + pager.getWord());
+		
+		if(pager.getWord() == null || pager.getWord().equals("")) {
+			pager.setWord(null);
+		}
+		
+		pager.setPage(pager.getPage());
+		pager.setTotalCount(boardDao.getPageSize(pager));
+		pager.calculate(pager.getPage());
 		this.pager = pager;
 		return boardDao.getAllList(pager);
 	}

@@ -1,143 +1,124 @@
 package com.cafe24.mysite.vo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.cafe24.mysite.service.BoardService;
-import com.cafe24.web.constant.ConstantVariables;
+import static com.cafe24.web.constant.ConstantVariables.*;
 
 public class Pager {
+	
 	private int page;
-	private int startGroupPage;
-	private int startPage;
+	
+	private int startPage; 
 	private int endPage;
+	
+	private int startPageIndex; //한 페이지 기준으로 시작 row 번호
+	
+	private boolean leftArrow;
+	private boolean rightArrow;
+	
+	private int totalCount; //총 게시물 수
+	
 	private String word;
 	
-	private int currentDataSizePerPage;
-	private int boardSize;
+	public void calculate(int page) {
+
+		
+		int totalPage = totalCount / PAGE_SIZE; //전체 게시글의 크기에 따른 페이지 수
+		
+		if(totalCount % PAGE_SIZE > 0) {
+			
+			totalPage++; // 나머지가 있을 경우에만 1을 더한다.
+						 // 이렇게 안하면 마지막 페이지에 게시물이 나오지 않음
+		}
+		
+		if(totalPage < this.page) {
+			page = totalPage;
+		}
+		
+		startPage = ((this.page - 1) / PAGE_SIZE) * PAGE_SIZE + 1;
+		endPage = startPage + PAGE_SIZE - 1; 
+		startPageIndex = ((this.page - 1) * PAGE_SIZE);
+		leftArrow = (startPage == 1) ? false : true;
+		rightArrow = (totalCount > (((page - 1) / PAGE_SIZE) + 1) * GROUP_SIZE) ? true : false;
+		
+		//  여기서 마지막 페이지를 보정해줍니다.
+
+		if (endPage > totalPage) {
+		    endPage = totalPage;
+		}
+	}
 	
-	@Autowired 
-	private BoardService boardService;
-		
-	public void calculatePage(int page, String word) {
-		
-		this.page = page;
-		this.word = word;
-		
-		this.currentDataSizePerPage = page * ConstantVariables.PAGE_SIZE;
-		
-		if (this.word != null && !this.word.equals("")) {
-			this.word = "%" + this.word + "%";
-		} else {
-			this.word = null;
-		}
-		this.startGroupPage = page / ConstantVariables.PAGE_SIZE;
-		
-		this.startPage = (startGroupPage * ConstantVariables.PAGE_SIZE) + 1;
-		this.endPage = this.startPage + (boardSize / ConstantVariables.PAGE_SIZE);
-		this.endPage = (boardSize % ConstantVariables.PAGE_SIZE == 0) ? this.endPage - 1:  this.endPage; 
-		if(boardSize > ConstantVariables.GROUP_SIZE) {
-			this.endPage -= 1;
-		}
-		if(endPage < startPage) {
-			endPage = startPage;
-		}
+	public int getTotalCount() {
+		return totalCount;
 	}
 
-
-
-	public String getWord() {
-		return word;
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
 	}
 
-
-	public void setWord(String word) {
-		this.word = word;
+	public int getStartPageIndex() {
+		return startPageIndex;
 	}
 
-	public int getCurrentDataSizePerPage() {
-		return currentDataSizePerPage;
+	public void setStartPageIndex(int startPageIndex) {
+		this.startPageIndex = startPageIndex;
 	}
 
-	public void setCurrentDataSizePerPage(int currentDataSizePerPage) {
-		this.currentDataSizePerPage = currentDataSizePerPage;
+	public boolean getRightArrow() {
+		return rightArrow;
 	}
 
+	public void setRightArrow(boolean rightArrow) {
+		this.rightArrow = rightArrow;
+	}
+
+	public boolean getLeftArrow() {
+		return leftArrow;
+	}
+
+	public void setLeftArrow(boolean leftArrow) {
+		this.leftArrow = leftArrow;
+	}
 
 	public int getPage() {
+		if(page == 0) {
+			return 1;
+		}
 		return page;
 	}
-
-
 
 	public void setPage(int page) {
 		this.page = page;
 	}
 
-
-
-	public int getStartGroupPage() {
-		return startGroupPage;
+	public String getWord() {
+		return word;
 	}
 
-
-
-	public void setStartGroupPage(int startGroupPage) {
-		this.startGroupPage = startGroupPage;
+	public void setWord(String word) {
+		this.word = word;
 	}
-
-
 
 	public int getStartPage() {
 		return startPage;
 	}
 
-
-
 	public void setStartPage(int startPage) {
 		this.startPage = startPage;
 	}
-
-
 
 	public int getEndPage() {
 		return endPage;
 	}
 
-
-
 	public void setEndPage(int endPage) {
 		this.endPage = endPage;
 	}
 
-
-	public int getBoardSize() {
-		return boardSize;
-	}
-
-
-
-	public void setBoardSize(int boardSize) {
-		this.boardSize = boardSize;
-	}
-
-
-
-	public BoardService getBoardService() {
-		return boardService;
-	}
-
-
-
-	public void setBoardService(BoardService boardService) {
-		this.boardService = boardService;
-	}
-
-
-
 	@Override
 	public String toString() {
-		return "Pager [page=" + page + ", startGroupPage=" + startGroupPage + ", startPage=" + startPage + ", endPage="
-				+ endPage + ", word=" + word + "]";
+		return "Pager [page=" + page + ", startPage=" + startPage + ", endPage=" + endPage + ", startPageIndex="
+				+ startPageIndex + ", leftArrow=" + leftArrow + ", rightArrow=" + rightArrow + ", totalCount="
+				+ totalCount + ", word=" + word + "]";
 	}
 
+	
 }

@@ -53,7 +53,7 @@ public class BoardDao {
 	}
 
 	public int getPageSize(Pager pager) {
-		return sqlSession.selectOne("board.getPageSize", pager);
+		return sqlSession.selectOne("board.getTotalCount", pager);
 	}
 
 	public long getMaxOtherNo(long groupNo) {
