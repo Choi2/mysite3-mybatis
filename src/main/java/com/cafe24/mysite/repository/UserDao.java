@@ -3,6 +3,7 @@ package com.cafe24.mysite.repository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cafe24.mysite.vo.UserVo;
 
@@ -20,6 +21,7 @@ public class UserDao {
 		return sqlSession.selectOne("user.getByEmailAndPassword", vo);
 	}
 	
+	@Transactional
 	public boolean update(UserVo vo) {
 		return (sqlSession.update("user.update", vo) == 1);
 	}
