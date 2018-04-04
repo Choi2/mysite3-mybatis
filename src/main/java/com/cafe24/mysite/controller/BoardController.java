@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cafe24.mysite.service.BoardService;
 import com.cafe24.mysite.vo.BoardVo;
@@ -22,6 +23,7 @@ import com.cafe24.mysite.vo.UserVo;
 
 @Controller
 @RequestMapping("/board")
+@SessionAttributes("userAuth")
 public class BoardController {
 	
 	@Autowired
@@ -57,43 +59,41 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/write", method = RequestMethod.GET)
-	public String write(HttpSession session) {
-		
-		UserVo vo = (UserVo) session.getAttribute("authUser");
-		
+	public String write(@ModelAttribute UserVo vo) {
+
 		if(vo == null) {
 			return "user/login";
 		}
 		
-		return "board/write";
+		return "board/write"; //check
 	}
 	
 	@RequestMapping(value="/write", method = RequestMethod.POST)
-	public String write(HttpSession session, 
-			@ModelAttribute BoardVo vo,
+	public String write(
+			@ModelAttribute UserVo vo,
+			@ModelAttribute BoardVo board,
 			Model model) {
-		UserVo user = (UserVo) session.getAttribute("authUser");
-		
-		boardService.arrangeList(vo);
-		boardService.writeBoard(vo, user.getNo());
+
+		boardService.arrangeList(board);
+		boardService.writeBoard(board, vo.getNo());
 
 		return "redirect:/board";
 	}
 	
 	
 	@RequestMapping(value="/modify/{no}", method = RequestMethod.GET)
-	public String modify(HttpSession session, 
+	public String modify(
+			@ModelAttribute UserVo user,
 			@PathVariable ("no") long no,
 			Model model) {
 		
-		UserVo user = (UserVo) session.getAttribute("authUser");
-		BoardVo vo = boardService.getOneBoard(no);
+		BoardVo board = boardService.getOneBoard(no);
 		
-		if(user == null || user.getNo() != vo.getUserNo()) {
+		if(user == null || user.getNo() != board.getUserNo()) {
 			return "user/login";
 		}
 		
-		model.addAttribute("vo", vo);
+		model.addAttribute("vo", board);
 		return "board/modify";
 	}
 	

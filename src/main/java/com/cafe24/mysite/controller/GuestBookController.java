@@ -27,15 +27,24 @@ public class GuestBookController {
 		return "guestbook/list";
 	}
 	
+	@RequestMapping(value="/ajax", method=RequestMethod.GET)
+	public String AjaxList(Model model) {
+		List<GuestBookVo> list = guestBookService.getList();
+		model.addAttribute("list", list);
+		return "guestbook/index-ajax";
+	}
+	
 	@RequestMapping(value="/insert", method=RequestMethod.POST)
 	public String insert(@ModelAttribute GuestBookVo vo) {
 		guestBookService.insert(vo);
-		return "redirect:/guestbook";
+		return "redirect:/guestbook/ajax";
 	}
 	
 	@RequestMapping(value="/delete/{no}", method=RequestMethod.GET)
 	public String delete(@PathVariable long no) {
-		guestBookService.delete(no);
-		return "redirect:/guestbook";
+		//guestBookService.delete(no);
+		return "guestbook/deleteform";
 	}
+	
+	
 }
