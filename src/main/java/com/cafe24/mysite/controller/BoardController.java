@@ -2,8 +2,6 @@ package com.cafe24.mysite.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,17 +96,15 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/modify", method = RequestMethod.POST)
-	public String modify(HttpSession session, 
-			@ModelAttribute BoardVo vo) {
+	public String modify(@ModelAttribute BoardVo vo) {
 		boardService.modifyBoard(vo);
 		return "redirect:/board";
 	}
 	
 	@RequestMapping(value="/delete/{no}", method = RequestMethod.GET)
-	public String delete(HttpSession session, 
+	public String delete(@ModelAttribute UserVo user,
 			@PathVariable long no) {
 		
-		UserVo user = (UserVo) session.getAttribute("authUser");
 		BoardVo vo = boardService.getOneBoard(no);
 		
 		if(user == null || user.getNo() != vo.getUserNo()) {

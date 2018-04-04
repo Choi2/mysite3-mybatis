@@ -35,7 +35,14 @@
 
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/board/write/**"/>
+			<mvc:mapping path="/board/modify/**"/>
+			<bean class="com.cafe24.mysite.interceptor.AuthLoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 
 
 	<!-- 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->
