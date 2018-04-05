@@ -26,7 +26,7 @@
 						<td class="label">내용</td>
 						<td>
 							<div class="view-content">
-								${vo.content}
+								<c:out value="${vo.content}" escapeXml="true"></c:out> 
 							</div>
 						</td>
 					</tr>

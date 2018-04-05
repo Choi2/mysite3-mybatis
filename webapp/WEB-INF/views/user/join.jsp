@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> 
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!doctype html>
 <html>
 <head>
@@ -12,12 +14,17 @@
 <script>
 $(function(){
 	
+	$('input[type=submit]').submit(function() {
+		if($('#agree-prov').checked == false) {
+			
+		}
+	});
 	
 	
-	$("#check-id").click(function(){
+	$("#email").blur(function(){
 		var email = $("#email").val();
 		if(email == "") {
-			alert("이메일 내용없음");
+			$('#result-email').html('<p style="padding:0; font-weight:bold; text-align:left; color:red;"> 이메일이 없습니다.</p>');
 			return ;
 		}
 
@@ -34,9 +41,12 @@ $(function(){
 				} 
 				
 				if(response.data == "exist") {
-					alert("이미 사용 중인 이메일입니다.");
-					$("#email").val("").focus();
+					$('#result-email').html('<p style="padding:0; font-weight:bold; text-align:left; color:red;"> 중복된 이메일입니다.</p>');
+					$('input[name=email]').css('background-color','white');
 					return;
+				} else {
+					$('#result-email').empty();
+					$('input[name=email]').css('background-color','#BCD985');
 				}
 				
 				$("#img-check").show();
@@ -47,8 +57,8 @@ $(function(){
 				console.error(status + ":" + e);
 			}
 		});
-	
 	});
+
 });
 
 </script>
@@ -59,17 +69,34 @@ $(function(){
 		<div id="content">
 			<div id="user">
 
-				<form id="join-form" name="joinForm" method="post" action="${pageContext.servletContext.contextPath}/user/join">
+				<form:form
+					modelAttribute="userVo"
+					class="join-form"
+					id="join-form"
+					method="post"
+					action="${pageContext.request.contextPath}/user/join">
 					<label class="block-label" for="name">이름</label>
-					<input id="name" name="name" type="text" value="">
+					<form:input path="name"/>
+					
+					<p style="padding:0; font-weight:bold; text-align:left; color:red;">
+						<form:errors path="name"/>
+					</p>
 
 					<label class="block-label" for="email">이메일</label>
-					<input id="email" name="email" type="text" value="">
-					<img id='img-check' style='display:none;' src="${pageContext.servletContext.contextPath}/assets/images/check.png"/>
-					<input id="check-id" type="button" value="id 중복체크">
+					<form:input path="email"/>
+					
+					<span id="result-email"></span>
+					
+					<p style="padding:0; font-weight:bold; text-align:left; color:red;">
+						<form:errors path="email"/>
+					</p>
 					
 					<label class="block-label">패스워드</label>
-					<input name="password" type="password" value="">
+					<form:password path="password"/>
+					
+					<p style="padding:0; font-weight:bold; text-align:left; color:red;">
+						<form:errors path="password"/>
+					</p>
 					
 					<fieldset>
 						<legend>성별</legend>
@@ -85,7 +112,8 @@ $(function(){
 					
 					<input type="submit" value="가입하기">
 					
-				</form>
+				</form:form>
+
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp"/>
