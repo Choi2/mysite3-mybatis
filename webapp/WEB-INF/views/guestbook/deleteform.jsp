@@ -14,9 +14,7 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp"></jsp:include>
 		<div id="content">
 			<div id="guestbook" class="delete-form">
-				<form method="post" action="${pageContext.servletContext.contextPath}/guestbook">
-					<input type="hidden" name="a" value="delete">
-					<input type='hidden' name="no" value="${no}">
+				<form method="post" action="${pageContext.servletContext.contextPath}/guestbook/delete/${no}">
 					<label>비밀번호</label>
 					<input type="password" name="password">
 					<input type="submit" value="확인">

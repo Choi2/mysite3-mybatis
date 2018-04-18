@@ -13,6 +13,9 @@
 #guestbook ul		{ width:100%; margin-top:20px }
 #guestbook ul li	{ width:100%; margin-top:10px }
 
+#container #content {
+	height: 60%;
+}
 
 #guestbook.delete-form	{ height:200px }
 #guestbook.delete-form form {

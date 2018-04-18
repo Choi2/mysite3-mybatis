@@ -20,7 +20,7 @@ public class AuthLoginInterceptor extends HandlerInterceptorAdapter {
 			Object handler)
 			throws Exception {
 		
-		System.out.println("AuthLoginInterceptor:preHandle");
+		System.out.println("AuthLoginInterceptor:preHandle-" + request.getRequestURI());
 		
 		HttpSession session = request.getSession(true);
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
@@ -50,7 +50,7 @@ public class AuthLoginInterceptor extends HandlerInterceptorAdapter {
 		
 		
 		session.setAttribute("authUser", authUser);
-		response.sendRedirect(request.getContextPath());
+		response.sendRedirect(request.getRequestURI());
 		
 		return false;
 	}

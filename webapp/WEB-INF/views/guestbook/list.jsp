@@ -42,7 +42,7 @@
 				<td><a href="${pageContext.servletContext.contextPath}/guestbook/delete/${vo.no}">삭제</a></td>
 			</tr>
 			<tr>
-				<td colspan="4">${vo.content}</td>
+				<td colspan="4"><c:out value="${vo.content}" escapeXml="true"></c:out></td>
 			</tr>
 		</table>
 						

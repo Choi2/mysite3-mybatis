@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.cafe24.mysite.interceptor.AuthUser;
 import com.cafe24.mysite.service.BoardService;
 import com.cafe24.mysite.vo.BoardVo;
 import com.cafe24.mysite.vo.CommentVo;
@@ -21,7 +22,7 @@ import com.cafe24.mysite.vo.UserVo;
 
 @Controller
 @RequestMapping("/board")
-@SessionAttributes("userAuth")
+@SessionAttributes("authUser") //authUser
 public class BoardController {
 	
 	@Autowired
@@ -36,10 +37,6 @@ public class BoardController {
 		pager = boardService.getPager();
 		model.addAttribute("list", list);
 		model.addAttribute("pager", pager);
-
-		System.out.println(pager);
-
-		
 		return "board/list";
 	}
 	
@@ -56,13 +53,9 @@ public class BoardController {
 		return "board/view";
 	}
 	
-	@RequestMapping(value="/write", method = RequestMethod.GET)
+	@AuthUser
+	@RequestMapping(value="/write", method = RequestMethod.GET)	
 	public String write(@ModelAttribute UserVo vo) {
-
-		if(vo == null) {
-			return "user/login";
-		}
-		
 		return "board/write"; //check
 	}
 	
@@ -102,12 +95,12 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/delete/{no}", method = RequestMethod.GET)
-	public String delete(@ModelAttribute UserVo user,
+	public String delete(@ModelAttribute UserVo authUser,
 			@PathVariable long no) {
-		
+		System.out.println(authUser);
 		BoardVo vo = boardService.getOneBoard(no);
 		
-		if(user == null || user.getNo() != vo.getUserNo()) {
+		if(authUser == null || authUser.getNo() != vo.getUserNo()) {
 			return "user/login";
 		}
 		

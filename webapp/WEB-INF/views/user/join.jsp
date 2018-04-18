@@ -12,16 +12,18 @@
 <link href="${pageContext.servletContext.contextPath}/assets/css/user.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.servletContext.contextPath}/assets/js/jquery/jquery-1.9.0.js" type="text/javascript"></script>
 <script>
-$(function(){
-	
-	$('input[type=submit]').submit(function() {
-		if($('#agree-prov').checked == false) {
-			
+var checkIdPw = {
+	init:function() {
+		$('input[type=submit]').submit(this.__onSubmit.bind(this));
+		$('#email').blur(this.__onBlur.bind(this));
+	}, 
+	__onSubmit : function() {
+		if($('#agree-prov').is(":checked") == false) {
+			alert("이용약관에 동의하셔야 회원으로 가입하실 수 있습니다.");
+			return ;
 		}
-	});
-	
-	
-	$("#email").blur(function(){
+	}, 
+	__onBlur : function() {
 		var email = $("#email").val();
 		if(email == "") {
 			$('#result-email').html('<p style="padding:0; font-weight:bold; text-align:left; color:red;"> 이메일이 없습니다.</p>');
@@ -57,10 +59,12 @@ $(function(){
 				console.error(status + ":" + e);
 			}
 		});
-	});
+	}
+};
 
+$(function(){
+	checkIdPw.init();
 });
-
 </script>
 </head>
 <body>

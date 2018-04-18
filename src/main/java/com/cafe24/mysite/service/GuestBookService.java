@@ -14,15 +14,22 @@ public class GuestBookService {
 	@Autowired
 	private GuestBookDao guestBookDao;
 	
-	public List<GuestBookVo> getList() {
-		return guestBookDao.getList();
-	}
-	
-	public int delete(long no) {
-		return guestBookDao.delete(no);
+	public boolean delete(GuestBookVo vo) {
+		return guestBookDao.delete(vo);
 	}
 
-	public void insert(GuestBookVo vo) {
-		guestBookDao.insert(vo);
+	public GuestBookVo insert(GuestBookVo guestBookVo) {
+		GuestBookVo vo = null;
+		int count = guestBookDao.insert(guestBookVo);
+		System.out.println(count);
+		if(count == 1) {
+			vo = guestBookDao.get(guestBookVo.getNo());
+		}
+		
+		return vo;
+	}
+
+	public List<GuestBookVo> getList(long no) {
+		return guestBookDao.getList(no);
 	}
 }

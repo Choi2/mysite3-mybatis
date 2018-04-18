@@ -14,21 +14,24 @@ public class GuestBookDao {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<GuestBookVo> getList() {
-		return sqlSession.selectList("guestbook.getList");
+	public GuestBookVo get(Long no) {
+		return sqlSession.selectOne("guestbook.getByNo", no);
 	}
 	
-	public int delete(long no) {
+	public boolean delete(GuestBookVo vo) {
 /*		Map <String, Object> map = new HashMap<String, Object>();
 		map.put("no", vo.getNo());
 		map.put("password", vo.getPassword());*/
-		int count = sqlSession.delete("guestbook.delete", no);
-		return count;
+		boolean result = sqlSession.delete("guestbook.delete", vo) == 1;
+		return result;
 	}
 
-	public boolean insert(GuestBookVo vo) {
-		return (sqlSession.insert("guestbook.insert",vo) == 1);
+	public int insert(GuestBookVo vo) {
+		return sqlSession.insert("guestbook.insert",vo);
 	}
 
-	
+	public List<GuestBookVo> getList(long no) {
+		return sqlSession.selectList("guestbook.getList", no);
+	}
+
 }
