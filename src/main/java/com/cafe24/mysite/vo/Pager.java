@@ -1,8 +1,9 @@
 package com.cafe24.mysite.vo;
 
-import static com.cafe24.web.constant.ConstantVariables.*;
-
 public class Pager {
+	
+	public static final int PAGE_SIZE = 5;
+	public static final int GROUP_SIZE = 25;
 	
 	private int page;
 	

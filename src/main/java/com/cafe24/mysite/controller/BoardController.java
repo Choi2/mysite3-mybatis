@@ -2,8 +2,6 @@ package com.cafe24.mysite.controller;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,8 +25,6 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
-	
-	private static final Log LOG = LogFactory.getLog( BoardController.class );
 	
 	@RequestMapping("")
 	public String list(Model model,  Pager pager) {
@@ -65,8 +61,7 @@ public class BoardController {
 			@ModelAttribute BoardVo board,
 			Model model) {
 
-		boardService.arrangeList(board);
-		boardService.writeBoard(board, vo.getNo());
+		boardService.writeBoard(board, vo.getNo());  //해당 회원이 쓴 글 삽입
 
 		return "redirect:/board";
 	}
@@ -74,13 +69,13 @@ public class BoardController {
 	
 	@RequestMapping(value="/modify/{no}", method = RequestMethod.GET)
 	public String modify(
-			@ModelAttribute UserVo user,
+			@ModelAttribute("authUser") UserVo authUser,
 			@PathVariable ("no") long no,
 			Model model) {
 		
 		BoardVo board = boardService.getOneBoard(no);
 		
-		if(user == null || user.getNo() != board.getUserNo()) {
+		if(authUser == null || authUser.getNo() != board.getUserNo()) {
 			return "user/login";
 		}
 		
@@ -95,9 +90,9 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/delete/{no}", method = RequestMethod.GET)
-	public String delete(@ModelAttribute UserVo authUser,
+	public String delete(
+			@ModelAttribute("authUser") UserVo authUser,
 			@PathVariable long no) {
-		System.out.println(authUser);
 		BoardVo vo = boardService.getOneBoard(no);
 		
 		if(authUser == null || authUser.getNo() != vo.getUserNo()) {

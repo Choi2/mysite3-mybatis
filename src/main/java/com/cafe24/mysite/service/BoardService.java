@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cafe24.mysite.repository.BoardDao;
 import com.cafe24.mysite.vo.BoardVo;
@@ -19,8 +20,6 @@ public class BoardService {
 	
 	
 	public List<BoardVo> getAllBoardList(Pager pager) {
-		
-		System.out.println("word = " + pager.getWord());
 		
 		if(pager.getWord() == null || pager.getWord().equals("")) {
 			pager.setWord(null);
@@ -49,10 +48,12 @@ public class BoardService {
 	public List<CommentVo> getCommentList(long no) {
 		return boardDao.getCommentList(no);
 	}
-
+	
+	@Transactional
 	public void writeBoard(BoardVo vo, Long userNo) {
+		arrangeList(vo); //댓글 깊이에 따른 재 정렬
 		vo.setUserNo(userNo);
-		boardDao.insert(vo);
+		boardDao.insert(vo); //정렬 완료 후 게시글 등록하기
 	}
 
 	public void modifyBoard(BoardVo vo) {
