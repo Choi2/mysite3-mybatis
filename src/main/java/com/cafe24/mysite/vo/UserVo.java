@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserVo {
+
 	private Long no;
 	
 	@NotEmpty
@@ -25,6 +26,8 @@ public class UserVo {
 	
 	@NotEmpty
 	private String gender;
+	
+
 	private Date joinDate;
 	
 	public Long getNo() {
